@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PetCare – Gestión de Usuarios</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════ LOGIN ═══════════════════════ -->
+<div id="login-screen" class="screen active">
+  <div class="login-bg">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+  <div class="login-card">
+    <div class="login-brand">
+      <span class="paw">🐾</span>
+      <h1>PetCare</h1>
+      <p>Plataforma de Cuidado de Mascotas</p>
+    </div>
+    <form id="login-form" class="login-form" novalidate>
+      <div class="field">
+        <label>Correo electrónico</label>
+        <input type="email" id="login-email" placeholder="tu@correo.com" autocomplete="username" />
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      <div id="login-error" class="alert alert-error hidden"></div>
+      <button type="submit" class="btn btn-primary btn-full" id="login-btn">
+        <span class="btn-text">Iniciar sesión</span>
+        <span class="btn-loader hidden">⏳</span>
+      </button>
+    </form>
+    <p class="login-footer">
+      ¿Sin cuenta? <a href="#" id="go-register">Registrarse</a>
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════ REGISTER ═══════════════════════ -->
+<div id="register-screen" class="screen">
+  <div class="login-bg">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+  </div>
+  <div class="login-card login-card--wide">
+    <div class="login-brand">
+      <span class="paw">🐾</span>
+      <h1>Crear cuenta</h1>
+    </div>
+    <form id="register-form" class="login-form" novalidate>
+      <div class="field-row">
+        <div class="field">
+          <label>Nombre</label>
+          <input type="text" id="reg-nombre" placeholder="Juan" />
+        </div>
+        <div class="field">
+          <label>Apellido</label>
+          <input type="text" id="reg-apellido" placeholder="Pérez" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Correo electrónico</label>
+        <input type="email" id="reg-email" placeholder="tu@correo.com" />
+      </div>
+      <div class="field">
+        <label>Teléfono (opcional)</label>
+        <input type="tel" id="reg-telefono" placeholder="+591 7000 0000" />
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" />
+      </div>
+      <div class="field">
+        <label>Rol</label>
+        <select id="reg-rol">
+          <option value="dueño">Dueño de mascota</option>
+          <option value="cuidador">Cuidador</option>
+        </select>
+      </div>
+      <div id="register-error" class="alert alert-error hidden"></div>
+      <div id="register-success" class="alert alert-success hidden"></div>
+      <button type="submit" class="btn btn-primary btn-full">Crear cuenta</button>
+    </form>
+    <p class="login-footer"><a href="#" id="go-login">← Volver al login</a></p>
+  </div>
+</div>
+
+<!-- ═══════════════════════ DASHBOARD ═══════════════════════ -->
+<div id="dashboard-screen" class="screen">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="paw">🐾</span>
+      <span>PetCare</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-section="usuarios">
+        <span class="nav-icon">👥</span> Usuarios
+      </a>
+    </nav>
+    <div class="sidebar-user" id="sidebar-user-info"></div>
+    <button class="btn-logout" id="logout-btn">Cerrar sesión</button>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-content">
+    <header class="topbar">
+      <div>
+        <h2 class="topbar-title">Gestión de Usuarios</h2>
+        <p class="topbar-sub">Sprint 1 · CRUD completo</p>
+      </div>
+      <button class="btn btn-primary" id="btn-nuevo-usuario">+ Nuevo usuario</button>
+    </header>
+
+    <!-- Stats -->
+    <div class="stats-row" id="stats-row">
+      <div class="stat-card"><span class="stat-num" id="stat-total">–</span><span class="stat-label">Total</span></div>
+      <div class="stat-card"><span class="stat-num" id="stat-duenos">–</span><span class="stat-label">Dueños</span></div>
+      <div class="stat-card"><span class="stat-num" id="stat-cuidadores">–</span><span class="stat-label">Cuidadores</span></div>
+      <div class="stat-card"><span class="stat-num" id="stat-activos">–</span><span class="stat-label">Activos</span></div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="🔍  Buscar por nombre, email o rol…" />
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>ID</th><th>Nombre</th><th>Email</th><th>Teléfono</th>
+            <th>Rol</th><th>Estado</th><th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="user-tbody">
+          <tr><td colspan="7" class="loading-row">Cargando usuarios…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════ MODAL USUARIO ═══════════════════════ -->
+<div id="modal-overlay" class="modal-overlay hidden">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-title">Nuevo usuario</h3>
+      <button class="modal-close" id="modal-close">✕</button>
+    </div>
+    <form id="user-form" class="modal-form" novalidate>
+      <input type="hidden" id="form-id" />
+      <div class="field-row">
+        <div class="field">
+          <label>Nombre *</label>
+          <input type="text" id="form-nombre" placeholder="Juan" />
+        </div>
+        <div class="field">
+          <label>Apellido *</label>
+          <input type="text" id="form-apellido" placeholder="Pérez" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Email *</label>
+        <input type="email" id="form-email" placeholder="juan@ejemplo.com" />
+      </div>
+      <div class="field">
+        <label>Contraseña <span id="password-hint">(mínimo 6 caracteres)</span></label>
+        <input type="password" id="form-password" placeholder="••••••••" />
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Teléfono</label>
+          <input type="tel" id="form-telefono" placeholder="+591 7000 0000" />
+        </div>
+        <div class="field">
+          <label>Rol *</label>
+          <select id="form-rol">
+            <option value="dueño">Dueño</option>
+            <option value="cuidador">Cuidador</option>
+            <option value="administrador">Administrador</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" id="field-activo" style="display:none">
+        <label>Estado</label>
+        <select id="form-activo">
+          <option value="1">Activo</option>
+          <option value="0">Inactivo</option>
+        </select>
+      </div>
+      <div id="form-error" class="alert alert-error hidden"></div>
+      <div id="form-success" class="alert alert-success hidden"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="modal-cancel">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="form-submit">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════════════════════ CONFIRM DELETE ═══════════════════════ -->
+<div id="confirm-overlay" class="modal-overlay hidden">
+  <div class="modal modal--sm">
+    <div class="modal-header">
+      <h3>Confirmar eliminación</h3>
+    </div>
+    <p id="confirm-text" style="padding:0 1.5rem 1rem;color:var(--text-muted)">¿Eliminar este usuario?</p>
+    <div class="modal-actions" style="padding-bottom:1.5rem">
+      <button class="btn btn-ghost" id="confirm-cancel">Cancelar</button>
+      <button class="btn btn-danger" id="confirm-delete">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
