@@ -1,11 +1,12 @@
 import sqlite3
 import hashlib
 import re
+import os
 from datetime import datetime
-from flask import Flask, request, jsonify, g
+from flask import Flask, request, jsonify, g, send_from_directory
 from flask_cors import CORS
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='.')
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 DATABASE = 'petcare.db'
@@ -110,6 +111,11 @@ def init_db():
         
         db.commit()
         print("✓ Base de datos inicializada con tablas de usuarios, productos y solicitudes")
+
+# --- RUTA PRINCIPAL PARA RENDER ---
+@app.route('/')
+def index():
+    return send_from_directory('.', 'index.html')
 
 # ==================== ENDPOINTS USUARIOS (Sprint 1) ====================
 
@@ -710,19 +716,18 @@ def actualizar_estado_solicitud(id):
 # ==================== INICIO ====================
 
 if __name__ == '__main__':
-    import os
-    if os.path.exists(DATABASE):
-        print("Base de datos existente encontrada. Actualizando...")
-    else:
+    if not os.path.exists(DATABASE):
         print("Creando nueva base de datos...")
+    else:
+        print("Base de datos existente encontrada. Actualizando...")
     
     init_db()
     print("\n" + "="*50)
     print("   PETCARE CONNECT - SPRINT 3")
     print("="*50)
     print("\n✅ Base de datos inicializada")
-    print("\n🚀 Servidor iniciado en: http://localhost:5000")
+    print("\n🚀 Servidor listo para arrancar...")
     print("="*50 + "\n")
     
-port = int(os.environ.get('PORT', 5000))
-app.run(debug=False, host='0.0.0.0', port=port)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=False, host='0.0.0.0', port=port)
